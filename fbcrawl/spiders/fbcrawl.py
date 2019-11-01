@@ -228,6 +228,7 @@ class FacebookSpider(scrapy.Spider):
                 yield scrapy.Request(new_page, callback=self.parse_page, meta={'flag':self.k})
                 
     def parse_post(self,response):
+        
         new = ItemLoader(item=FbcrawlItem(),response=response,parent=response.meta['item'])
         new.context['lang'] = self.lang           
         new.add_xpath('source', "//td/div/h3/strong/a/text() | //span/strong/a/text() | //div/div/div/a[contains(@href,'post_id')]/strong/text()")
@@ -246,6 +247,7 @@ class FacebookSpider(scrapy.Spider):
             yield scrapy.Request(reactions, callback=self.parse_reactions, meta={'item':new})
         
     def parse_reactions(self,response):
+        
         new = ItemLoader(item=FbcrawlItem(),response=response, parent=response.meta['item'])
         new.context['lang'] = self.lang           
         new.add_xpath('likes',"//a[contains(@href,'reaction_type=1')]/span/text()")

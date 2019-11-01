@@ -564,6 +564,9 @@ def id_strip(post_id):
     d = json.loads(post_id[::-1][0]) #nested dict of features
     return str(d['top_level_post_id'])
 
+def extract_post_id(post_id):
+    id = post_id[0].split("/")[-1]
+    return id
 
 class FbcrawlItem(scrapy.Item):
     source = scrapy.Field()
@@ -626,7 +629,10 @@ class CommentsItem(scrapy.Item):
     wow = scrapy.Field()
     sigh = scrapy.Field()
     grrr = scrapy.Field()
-    share = scrapy.Field()                      # num of shares
+    share = scrapy.Field() 
+    post_id = scrapy.Field(
+        output_processor=extract_post_id
+    )                     # num of shares
 
 class ProfileItem(scrapy.Item):
     name = scrapy.Field()

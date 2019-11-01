@@ -14,7 +14,7 @@ class CommentsSpider(FacebookSpider):
     name = "comments"
     custom_settings = {
         'FEED_EXPORT_FIELDS': ['source','reply_to','date','reactions','text', \
-                               'source_url','url'],
+                               'source_url','url','post_id'],
         'DUPEFILTER_CLASS' : 'scrapy.dupefilters.BaseDupeFilter',
         'CONCURRENT_REQUESTS' : 1
     }
@@ -160,6 +160,7 @@ class CommentsSpider(FacebookSpider):
                 new.add_xpath('source','.//h3/a/text()')  
                 new.add_xpath('source_url','.//h3/a/@href')   
                 new.add_xpath('text','.//div[h3]/div[1]//text()')
+                new.add_value('post_id' , self.page)
                 new.add_xpath('date','.//abbr/text()')
                 new.add_xpath('reactions','.//a[contains(@href,"reaction/profile")]//text()')
                 new.add_value('url',response.url)
@@ -204,6 +205,7 @@ class CommentsSpider(FacebookSpider):
                 new.add_xpath('source','.//h3/a/text()')  
                 new.add_xpath('source_url','.//h3/a/@href') 
                 new.add_value('reply_to','ROOT')
+                new.add_value('post_id' , self.page)
                 new.add_xpath('text','.//div[1]//text()')
                 new.add_xpath('date','.//abbr/text()')
                 new.add_xpath('reactions','.//a[contains(@href,"reaction/profile")]//text()')
@@ -215,6 +217,7 @@ class CommentsSpider(FacebookSpider):
                 new.context['lang'] = self.lang           
                 new.add_xpath('source','.//h3/a/text()')  
                 new.add_xpath('source_url','.//h3/a/@href') 
+                new.add_value('post_id' , self.page)
                 new.add_value('reply_to',response.meta['reply_to'])
                 new.add_xpath('text','.//div[h3]/div[1]//text()')
                 new.add_xpath('date','.//abbr/text()')
@@ -250,6 +253,7 @@ class CommentsSpider(FacebookSpider):
                 new.context['lang'] = self.lang           
                 new.add_xpath('source','.//h3/a/text()')  
                 new.add_xpath('source_url','.//h3/a/@href') 
+                new.add_value('post_id' , self.page)
                 new.add_value('reply_to',response.meta['reply_to'])
                 new.add_xpath('text','.//div[h3]/div[1]//text()')
                 new.add_xpath('date','.//abbr/text()')
@@ -288,18 +292,4 @@ class CommentsSpider(FacebookSpider):
 #        new.add_xpath('ahah',"//a[contains(@href,'reaction_type=4')]/span/text()")
 #        new.add_xpath('love',"//a[contains(@href,'reaction_type=2')]/span/text()")
 #        new.add_xpath('wow',"//a[contains(@href,'reaction_type=3')]/span/text()")
-#        new.add_xpath('sigh',"//a[contains(@href,'reaction_type=7')]/span/text()")
-#        new.add_xpath('grrr',"//a[contains(@href,'reaction_type=8')]/span/text()")        
-#        yield new.load_item()     
-#
-#    #substitute
-#    yield new.load_item()
-#    ‾‾‾‾‾‾‾‾‾|‾‾‾‾‾‾‾‾‾‾‾
-#    _________v___
-#    #response --> reply/root
-#    reactions = response.xpath(".//a[contains(@href,'reaction/profile')]/@href")
-#    reactions = response.urljoin(reactions[0].extract())
-#    if reactions:
-#        yield scrapy.Request(reactions, callback=self.parse_reactions, meta={'item':new})
-#    else:
-#        yield new.load_item() 
+
